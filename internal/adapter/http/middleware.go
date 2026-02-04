@@ -81,9 +81,10 @@ func validateRole(c *gin.Context, claims jwt.MapClaims, expectedIssuer string) b
 		c.Abort()
 		return false
 	}
-	if claims["iss"] != expectedIssuer {
-		logAuth(c, fmt.Sprintf("invalid issuer: %v", claims["iss"]))
-		c.JSON(http.StatusForbidden, gin.H{"error": "Invalid token issuer"})
+	// Compare as string (JWT claim can be string or other type)
+	if fmt.Sprint(claims["iss"]) != expectedIssuer {
+		logAuth(c, fmt.Sprintf("invalid issuer: %v (expected %q)", claims["iss"], expectedIssuer))
+		c.JSON(http.StatusForbidden, gin.H{"error": "Invalid token issuer", "expected": expectedIssuer})
 		c.Abort()
 		return false
 	}

@@ -371,6 +371,7 @@ EOF
 
 create_systemd_service() {
     print_info "Creating systemd service..."
+    # Use wrapper so env file is always loaded (source + exec); some systemd setups don't load EnvironmentFile.
     cat > "/etc/systemd/system/${SERVICE_NAME}.service" << EOF
 [Unit]
 Description=Faro Collector (Frontend Instrumentation to Loki)
@@ -380,8 +381,7 @@ After=network.target
 [Service]
 Type=simple
 User=root
-EnvironmentFile=-$ENV_FILE
-ExecStart=$INSTALL_DIR/$BINARY_NAME
+ExecStart=/bin/bash -c 'set -a; . $ENV_FILE; set +a; exec $INSTALL_DIR/$BINARY_NAME'
 Restart=on-failure
 RestartSec=5
 
