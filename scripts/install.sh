@@ -94,11 +94,8 @@ get_latest_version() {
     local tag
     tag=$(curl -sL "$url" 2>/dev/null | grep -oP '"tag_name":\s*"\K[^"]+' | head -1)
     if [ -z "$tag" ]; then
-        print_error "Could not fetch latest release from GitHub (repo: $GITHUB_REPO)"
-        print_info "  → Create a release with binaries at: https://github.com/${GITHUB_REPO}/releases"
-        print_info "  → Or install from local file: LOCAL_BINARY=/path/to/collector-fe-instrumentation-linux-amd64 $0"
-        print_info "  → Or set BINARY_URL to a direct download URL"
-        exit 1
+        print_warning "Could not fetch latest release from GitHub (repo: $GITHUB_REPO), trying v0.1.0"
+        tag="v0.1.0"
     fi
     echo "$tag"
 }
@@ -183,12 +180,8 @@ get_user_input() {
         fi
     done
 
-    while [ -z "$ALLOW_ORIGINS" ]; do
-        read -p "ALLOW_ORIGINS (comma-separated, e.g. https://app.example.com): " ALLOW_ORIGINS < /dev/tty
-        if [ -z "$ALLOW_ORIGINS" ]; then
-            print_error "ALLOW_ORIGINS cannot be empty"
-        fi
-    done
+    read -p "ALLOW_ORIGINS (comma-separated or * for all) [default: *]: " ALLOW_ORIGINS < /dev/tty
+    ALLOW_ORIGINS=${ALLOW_ORIGINS:-*}
 
     read -p "PORT [default: 3000]: " PORT < /dev/tty
     PORT=${PORT:-3000}
@@ -270,10 +263,10 @@ install_binary() {
         local version="$COLLECTOR_VERSION"
         if [ "$version" = "latest" ]; then
             version=$(get_latest_version)
-            print_info "Latest release: $version"
+            print_info "Release: $version"
         fi
         local url="https://github.com/${GITHUB_REPO}/releases/download/${version}/${BINARY_NAME}-linux-${arch}"
-        print_info "Downloading $url..."
+        print_info "Repo: $GITHUB_REPO | Downloading: $url"
         if ! download_with_retry "$url" "/tmp/${BINARY_NAME}-linux-${arch}"; then
             print_error "Download failed."
             print_info "  1) Create a release with binaries: https://github.com/${GITHUB_REPO}/releases"
