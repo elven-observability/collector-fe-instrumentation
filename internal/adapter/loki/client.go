@@ -24,7 +24,7 @@ type Client struct {
 	httpClient *http.Client
 }
 
-// NewClient creates a Loki client. baseURL is the Loki base URL (e.g. https://logs-prod-xxx.grafana.net).
+// NewClient creates a Loki client. baseURL is the Loki base URL (e.g. https://loki.elvenobservability.com).
 func NewClient(baseURL, token string, timeout time.Duration) *Client {
 	if timeout == 0 {
 		timeout = defaultTimeout

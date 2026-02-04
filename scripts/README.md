@@ -24,7 +24,7 @@ chmod +x scripts/install.sh && sudo ./scripts/install.sh
 
 ```bash
 sudo SECRET_KEY="sua-chave-com-pelo-menos-32-caracteres" \
-     LOKI_URL="https://logs-prod-xxx.grafana.net" \
+     LOKI_URL="https://loki.elvenobservability.com" \
      LOKI_API_TOKEN="seu-token" \
      ALLOW_ORIGINS="https://app.example.com,https://*.example.com" \
      ./scripts/install.sh
@@ -38,23 +38,23 @@ sudo LOCAL_BINARY=/path/to/collector-fe-instrumentation-linux-amd64 ./scripts/in
 
 ### Variáveis de configuração
 
-| Variável           | Obrigatório | Descrição |
-|--------------------|-------------|-----------|
-| `SECRET_KEY`       | Sim         | Chave para validar JWT (mín. 32 caracteres) |
-| `LOKI_URL`         | Sim         | URL do Loki (ex.: `https://logs-prod-xxx.grafana.net`) |
-| `LOKI_API_TOKEN`   | Sim         | Token de API do Loki |
-| `ALLOW_ORIGINS`    | Sim         | Origens CORS permitidas (vírgula) |
-| `PORT`             | Não         | Porta HTTP (padrão: 3000) |
-| `JWT_ISSUER`       | Não         | Issuer esperado no JWT (padrão: trusted-issuer) |
-| `JWT_VALIDATE_EXP` | Não         | Validar expiração do JWT: true/false (padrão: false) |
+| Variável           | Obrigatório | Descrição                                                |
+| ------------------ | ----------- | -------------------------------------------------------- |
+| `SECRET_KEY`       | Sim         | Chave para validar JWT (mín. 32 caracteres)              |
+| `LOKI_URL`         | Sim         | URL do Loki (ex.: `https://loki.elvenobservability.com`) |
+| `LOKI_API_TOKEN`   | Sim         | Token de API do Loki                                     |
+| `ALLOW_ORIGINS`    | Sim         | Origens CORS permitidas (vírgula)                        |
+| `PORT`             | Não         | Porta HTTP (padrão: 3000)                                |
+| `JWT_ISSUER`       | Não         | Issuer esperado no JWT (padrão: trusted-issuer)          |
+| `JWT_VALIDATE_EXP` | Não         | Validar expiração do JWT: true/false (padrão: false)     |
 
 ### Variáveis do instalador
 
-| Variável             | Descrição |
-|----------------------|-----------|
-| `LOCAL_BINARY`       | Caminho do binário local (instala sem download) |
-| `GITHUB_REPO`        | Repo no GitHub (padrão: elven/collector-fe-instrumentation) |
-| `COLLECTOR_VERSION`  | Tag da release (padrão: latest) |
+| Variável            | Descrição                                                   |
+| ------------------- | ----------------------------------------------------------- |
+| `LOCAL_BINARY`      | Caminho do binário local (instala sem download)             |
+| `GITHUB_REPO`       | Repo no GitHub (padrão: elven/collector-fe-instrumentation) |
+| `COLLECTOR_VERSION` | Tag da release (padrão: latest)                             |
 
 ### Onde fica instalado
 
