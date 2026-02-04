@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-	_ = os.Setenv("SECRET_KEY", "a-very-secure-key-with-32-characters")
+	_ = os.Setenv("SECRET_KEY", "a-very-secure-key-with-at-least-64-characters-for-jwt-validation-test")
 	_ = os.Setenv("JWT_ISSUER", "trusted-issuer")
 	_ = os.Setenv("JWT_VALIDATE_EXP", "true")
 	_ = os.Setenv("ALLOW_ORIGINS", "http://localhost")

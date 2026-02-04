@@ -57,7 +57,7 @@ func (c *Config) Validate() error {
 	if c.SecretKey == "" {
 		return ErrMissingSecretKey
 	}
-	if len(c.SecretKey) < 32 {
+	if len(c.SecretKey) < 64 {
 		return ErrSecretKeyTooShort
 	}
 	if c.LokiURL == "" {

@@ -4,6 +4,30 @@
 
 Instala o binário do Faro Collector como serviço systemd, com configuração via env ou interativo.
 
+### ⚠️ Usar o script DESTE repositório
+
+O one-liner correto usa o script do **collector-fe-instrumentation** (não do repo `scripts`):
+
+```bash
+curl -sSL https://raw.githubusercontent.com/elven-observability/collector-fe-instrumentation/main/scripts/install.sh | sudo bash
+```
+
+Antes da primeira instalação, é preciso ter uma **release com binários** no GitHub. No repo `collector-fe-instrumentation`:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+O workflow `.github/workflows/release.yaml` sobe os binários na release. Depois disso, o instalador acima funciona.
+
+Se ainda não houver release, use **binário local**: baixe o artefato "binaries" do job **build-binaries** na Actions, copie `collector-fe-instrumentation-linux-amd64` para a VM (ex.: `/tmp/`). Na VM, baixe o script e rode com as variáveis:
+
+```bash
+curl -sSL -o /tmp/install-collector.sh https://raw.githubusercontent.com/elven-observability/collector-fe-instrumentation/main/scripts/install.sh
+sudo env SECRET_KEY="..." LOKI_URL="..." LOKI_API_TOKEN="..." ALLOW_ORIGINS="..." LOCAL_BINARY=/tmp/collector-fe-instrumentation-linux-amd64 bash /tmp/install-collector.sh
+```
+
 ### Requisitos
 
 - Linux com systemd (Ubuntu/Debian, RHEL/CentOS/Rocky/AlmaLinux/Fedora, Amazon Linux)
@@ -23,7 +47,7 @@ chmod +x scripts/install.sh && sudo ./scripts/install.sh
 **Com variáveis de ambiente (CI / automatizado):**
 
 ```bash
-sudo SECRET_KEY="sua-chave-com-pelo-menos-32-caracteres" \
+sudo SECRET_KEY="sua-chave-com-pelo-menos-64-caracteres" \
      LOKI_URL="https://loki.elvenobservability.com" \
      LOKI_API_TOKEN="seu-token" \
      ALLOW_ORIGINS="https://app.example.com,https://*.example.com" \
@@ -40,7 +64,7 @@ sudo LOCAL_BINARY=/path/to/collector-fe-instrumentation-linux-amd64 ./scripts/in
 
 | Variável           | Obrigatório | Descrição                                                |
 | ------------------ | ----------- | -------------------------------------------------------- |
-| `SECRET_KEY`       | Sim         | Chave para validar JWT (mín. 32 caracteres)              |
+| `SECRET_KEY`       | Sim         | Chave para validar JWT (mín. 64 caracteres)              |
 | `LOKI_URL`         | Sim         | URL do Loki (ex.: `https://loki.elvenobservability.com`) |
 | `LOKI_API_TOKEN`   | Sim         | Token de API do Loki                                     |
 | `ALLOW_ORIGINS`    | Sim         | Origens CORS permitidas (vírgula)                        |
