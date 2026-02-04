@@ -98,6 +98,14 @@ func (s *CollectorService) payloadToStreams(p *domain.Payload) []domain.LokiStre
 }
 
 func (s *CollectorService) baseFields(p *domain.Payload) map[string]interface{} {
+	pageURL := p.Meta.Page.URL
+	if pageURL == "" && p.Page != nil {
+		pageURL = p.Page.URL
+	}
+	sessionID := p.Meta.Session.ID
+	if sessionID == "" && p.Session != nil {
+		sessionID = p.Session.ID
+	}
 	fields := map[string]interface{}{
 		"app":             p.Meta.App.Name,
 		"app_version":     p.Meta.App.Version,
@@ -106,8 +114,8 @@ func (s *CollectorService) baseFields(p *domain.Payload) map[string]interface{} 
 		"browser_version": p.Meta.Browser.Version,
 		"browser_os":      p.Meta.Browser.OS,
 		"browser_mobile":  p.Meta.Browser.Mobile,
-		"session_id":      p.Meta.Session.ID,
-		"page_url":        p.Meta.Page.URL,
+		"session_id":      sessionID,
+		"page_url":        pageURL,
 		"view_name":       p.Meta.View.Name,
 		"sdk_version":     p.Meta.SDK.Version,
 		"user_username":   p.Meta.User.Username,

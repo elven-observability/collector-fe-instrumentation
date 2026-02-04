@@ -21,6 +21,16 @@ git push origin v0.1.0
 
 O workflow `.github/workflows/release.yaml` sobe os binários na release. Depois disso, o instalador acima funciona.
 
+**Repositório privado:** use um token do GitHub para o script baixar a release. Na máquina onde o `gh` está logado:
+
+```bash
+# Token temporário do gh (use o mesmo usuário que tem acesso ao repo)
+export GITHUB_TOKEN=$(gh auth token)
+curl -sSL https://raw.githubusercontent.com/elven-observability/collector-fe-instrumentation/main/scripts/install.sh | sudo -E bash
+```
+
+Ou em uma VM sem `gh`: gere um token em GitHub → Settings → Developer settings → Personal access tokens (scope `repo`) e use `GITHUB_TOKEN=ghp_xxx` antes do instalador. O script precisa de **jq** ou **python3** para repo privado (`apt install -y jq` se necessário).
+
 Se ainda não houver release, use **binário local**: baixe o artefato "binaries" do job **build-binaries** na Actions, copie `collector-fe-instrumentation-linux-amd64` para a VM (ex.: `/tmp/`). Na VM, baixe o script e rode com as variáveis:
 
 ```bash
@@ -76,6 +86,7 @@ sudo LOCAL_BINARY=/path/to/collector-fe-instrumentation-linux-amd64 ./scripts/in
 
 | Variável             | Descrição                                                                 |
 | -------------------- | ------------------------------------------------------------------------- |
+| `GITHUB_TOKEN`       | Token para repo privado (ex.: `$(gh auth token)`). Requer jq ou python3.  |
 | `LOCAL_BINARY`       | Caminho do binário local (instala sem download)                            |
 | `BINARY_URL`         | URL direta do binário (evita GitHub Release)                              |
 | `GITHUB_REPO`        | Repo no GitHub (padrão: elven-observability/collector-fe-instrumentation) |

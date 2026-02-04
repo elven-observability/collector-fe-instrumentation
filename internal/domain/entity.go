@@ -4,12 +4,15 @@ import "encoding/json"
 
 // Payload represents the Faro Web SDK v2.x transport payload.
 // Aligned with Grafana Faro: logs, events, measurements, exceptions.
+// Faro may send "page" and "session" at top level or inside "meta".
 type Payload struct {
-	Meta       Meta         `json:"meta"`
-	Logs       []LogEntry   `json:"logs"`
-	Events     []Event      `json:"events"`
-	Measurements []Measurement `json:"measurements"`
-	Exceptions []Exception  `json:"exceptions"`
+	Meta         Meta           `json:"meta"`
+	Page         *PageMeta      `json:"page,omitempty"`   // top-level (Faro style)
+	Session      *SessionMeta   `json:"session,omitempty"` // top-level (Faro style)
+	Logs         []LogEntry     `json:"logs"`
+	Events       []Event        `json:"events"`
+	Measurements []Measurement  `json:"measurements"`
+	Exceptions   []Exception    `json:"exceptions"`
 }
 
 type Meta struct {
