@@ -38,27 +38,41 @@ func Router(cfg *config.Config, collector *usecase.CollectorService, opts ...Rou
 
 func corsMiddleware(cfg *config.Config) gin.HandlerFunc {
 	origins := cfg.AllowOrigins
-	allowFunc := func(origin string) bool {
-		for _, allowed := range origins {
-			if origin == allowed {
-				return true
-			}
-			if strings.HasPrefix(allowed, "https://*.") {
-				base := strings.TrimPrefix(allowed, "https://*.")
-				if strings.HasSuffix(origin, base) {
-					return true
-				}
-			}
+	// Check if wildcard is present
+	allowAll := false
+	for _, o := range origins {
+		if o == "*" {
+			allowAll = true
+			break
 		}
-		return false
 	}
+
 	corsCfg := cors.Config{
-		AllowOriginFunc:  allowFunc,
 		AllowMethods:     []string{"POST", "PUT", "OPTIONS"},
 		AllowHeaders:     []string{"Content-Type", "Authorization", "X-Scope-OrgID", "X-Faro-Session-Id", "Origin", "Accept", "Referer", "User-Agent"},
 		ExposeHeaders:    []string{"Content-Length", "X-Kong-Request-ID", "X-Kong-Upstream-Latency"},
 		AllowCredentials: true,
-		MaxAge:            12 * time.Hour,
+		MaxAge:           12 * time.Hour,
+	}
+
+	if allowAll {
+		corsCfg.AllowAllOrigins = true
+	} else {
+		allowFunc := func(origin string) bool {
+			for _, allowed := range origins {
+				if origin == allowed {
+					return true
+				}
+				if strings.HasPrefix(allowed, "https://*.") {
+					base := strings.TrimPrefix(allowed, "https://*.")
+					if strings.HasSuffix(origin, base) {
+						return true
+					}
+				}
+			}
+			return false
+		}
+		corsCfg.AllowOriginFunc = allowFunc
 	}
 	return cors.New(corsCfg)
 }
